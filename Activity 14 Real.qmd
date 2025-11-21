@@ -1,0 +1,215 @@
+---
+title: "Activity 14 - Visualizations and Data Wrangling Redux"
+author: "Tyler Gilbert"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format: 
+  pdf:
+    toc: true
+    number-sections: true
+    includes:
+      in-header: null
+execute:
+  echo: false
+  warning: false
+  message: false
+
+---
+
+
+
+## Armed Forces Data Wrangling
+
+Using the data from the previous activities, I created the table requested where every case is a soldier. Then as described made it ordered by rank. Then I created the frequency table to show progress from when we first worked with this data.
+
+
+```{r}
+# ---- Armed Forces Data Wrangling ----
+
+library(googlesheets4)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(readr)
+library(ggplot2)
+
+# Reading the file
+url <- "https://docs.google.com/spreadsheets/d/19xQnI1cBh6Jkw7eP8YQuuicMlVDF7Gr-nXCb5qbwb_E/edit?usp=sharing"
+
+googlesheets4::gs4_deauth()
+
+googlesheets4::gs4_deauth()
+armed_raw <- read_sheet(url, col_types = "c") 
+
+#Clean the names of the data
+armed_raw <- janitor::clean_names(armed_raw) 
+
+
+# Rename the first column 
+colnames(armed_raw)[1] <- "pay_grade" 
+
+# ---- Reshape (pivot) ---- 
+armedForces_table <- armed_raw %>%
+# Only keep the rows with the ranks
+  filter(str_detect(pay_grade, "^[EOW][0-9]+")) %>%
+  pivot_longer(
+    cols = -pay_grade,
+    names_to = c("service", "gender"),
+    names_pattern = "(.*)_(.*)",
+    values_to = "count"
+  ) %>%
+  mutate(
+    count = str_replace_all(count, ",", ""),
+    count = as.numeric(count)
+  )
+freq_by_service <- armedForces_table %>%
+  group_by(service) %>%
+  summarise(total_personnel = sum(count, na.rm = TRUE)) %>%
+  arrange(desc(total_personnel))
+
+freq_by_service
+
+# ---- Baby Names Visualization ----
+
+library(babynames)
+
+baby_names_plot <- babynames %>%
+filter(name %in% c("Matthew", "Sarah", "Taylor", "Jordan")) %>%
+ggplot(aes(x = year, y = n, color = name)) +
+geom_line() +
+labs(title = "Popularity of Baby Names (Emma and Liam)",
+x = "Year", y = "Number of Babies") +
+theme_minimal()
+
+# ---- Box Problem Plot ----
+
+s <- 30   # sheet side length; change to the value your problem uses
+volume <- function(x) {
+  (s - 2 * x)^2 * x    # use 2 * x, and parentheses around (s - 2*x)
+}
+
+# Plot on the valid domain 0 <= x <= s/2
+box_plot <- ggplot(data.frame(x = c(0, s/2)), aes(x = x)) +
+  stat_function(fun = volume, geom = "line", linewidth = 1.1) +
+  labs(title = paste0("Box Volume vs. Cut-out Side Length (s = ", s, ")"),
+       x = "Cut-out side length (x)",
+       y = "Volume") +
+  theme_minimal()
+
+# Optionally, compute the maximizing x (for display or annotation)
+opt <- optimize(volume, interval = c(0, s/2), maximum = TRUE)
+opt  # opt$maximum is the x that maximizes volume, opt$objective is the max volume
+
+```
+
+```{r}
+#| echo: false
+armedForces_table 
+View(freq_by_service)
+```
+
+
+
+## Popularity of Baby Names
+This visualization shows trends in the names Matthew, Sarah, Taylor, and Jordan over time.
+The names I chose were because I have family or friends with these names, or they 
+have just been names I like and know are fairly common.
+
+```{r}
+#| echo: false
+baby_names_plot
+```
+
+## Box Plot Function
+The plot below shows the volume of an open-top box and how it changes with the side length of the square cut-out. As the cut size increases, volume first increases and then decreases, showing an optimal point for maximum volume. The data shows a slight skew to the right, given the current side length chosen.
+
+```{r}
+#| echo: false
+box_plot
+
+```
+
+## What I've Learned Thus Far
+I feel that I have learned how to think more like a coder. Taking other classes involving coding, none of them have focused on the process of it or shown full in-depth examples of how to plan it out and code what we need to.
+
+```{r}
+#| echo: true
+#| eval: true
+#| label: "code-appendix"
+
+
+# ---- Armed Forces Data Wrangling ----
+
+library(googlesheets4)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(readr)
+library(ggplot2)
+
+# Reading the file
+url <- "https://docs.google.com/spreadsheets/d/19xQnI1cBh6Jkw7eP8YQuuicMlVDF7Gr-nXCb5qbwb_E/edit?usp=sharing"
+
+armed_raw <- read_sheet(url, col_types = "c") 
+
+#Clean the names of the data
+armed_raw <- janitor::clean_names(armed_raw) 
+
+
+# Rename the first column 
+colnames(armed_raw)[1] <- "pay_grade" 
+
+# ---- Reshape (pivot) ---- 
+armedForces_table <- armed_raw %>%
+# Only keep the rows with the ranks
+  filter(str_detect(pay_grade, "^[EOW][0-9]+")) %>%
+  pivot_longer(
+    cols = -pay_grade,
+    names_to = c("service", "gender"),
+    names_pattern = "(.*)_(.*)",
+    values_to = "count"
+  ) %>%
+  mutate(
+    count = str_replace_all(count, ",", ""),
+    count = as.numeric(count)
+  )
+
+freq_by_service <- armedForces_table %>%
+  group_by(service) %>%
+  summarise(total_personnel = sum(count, na.rm = TRUE)) %>%
+  arrange(desc(total_personnel))
+
+freq_by_service
+
+# ---- Baby Names Visualization ----
+
+library(babynames)
+
+baby_names_plot <- babynames %>%
+filter(name %in% c("Matthew", "Sarah", "Taylor", "Jordan")) %>%
+ggplot(aes(x = year, y = n, color = name)) +
+geom_line() +
+labs(title = "Popularity of Baby Names (Emma and Liam)",
+x = "Year", y = "Number of Babies") +
+theme_minimal()
+
+# ---- Box Problem Plot ----
+
+s <- 30   # sheet side length
+volume <- function(x) {
+  (s - 2 * x)^2 * x    # use 2 * x, and parentheses around (s - 2*x)
+}
+
+# Plot on the valid domain 0 <= x <= s/2
+box_plot <- ggplot(data.frame(x = c(0, s/2)), aes(x = x)) +
+  stat_function(fun = volume, geom = "line", linewidth = 1.1) +
+  labs(title = paste0("Box Volume vs. Cut-out Side Length (s = ", s, ")"),
+       x = "Cut-out side length (x)",
+       y = "Volume") +
+  theme_minimal()
+
+
+opt <- optimize(volume, interval = c(0, s/2), maximum = TRUE)
+opt  # opt$maximum is the x that maximizes volume, opt$objective is the max volume
+
+
+```
