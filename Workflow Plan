@@ -1,0 +1,37 @@
+Repo Content
+- Activity14.qmd – Source Quarto file from Activity 14
+- Activity14.pdf – Rendered output of the QMD file
+- README.md – Project explanation and workflow plan
+
+Activity 14 Plan
+Needs: 
+All data sets
+- Armed forces data
+- Baby names
+
+All packages:
+- googlesheets4)
+- dplyr
+- tidyr
+- stringr
+- readr
+- ggplot2
+- babynames
+
+Armed Forces:
+1. Read the data set
+2. Clean all the names of the data
+3. Rename attributes (needed to during revision process)
+4. Create tables
+    a. Create pivot tables
+    b. Create frequency tables
+5. Improve wherever needed
+6. Polish code
+
+Baby Names:
+- Tidy the data by piping it
+- Filter for four selected names only
+- Graph the data on a visualization
+
+
+
