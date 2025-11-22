@@ -1,0 +1,53 @@
+Repo Content
+- Activity14.qmd – Source Quarto file from Activity 14
+- Activity14.pdf – Rendered output of the QMD file
+- README.md – Project explanation and workflow plan
+
+Activity 14 Plan
+Needs: 
+All data sets
+- Armed forces data
+- Baby names
+
+All packages:
+- googlesheets4)
+- dplyr
+- tidyr
+- stringr
+- readr
+- ggplot2
+- babynames
+
+Armed Forces:
+1. Read the data set
+2. Clean all the names of the data
+3. Rename attributes (needed to during revision process)
+4. Create tables
+    a. Create pivot tables
+    b. Create frequency tables
+5. Improve wherever needed
+6. Polish code
+
+Baby Names:
+1. Tidy the data by piping it
+2. Filter for four selected names only
+3. Graph the data on a visualization
+
+Box Plot:
+1. Create variables
+2. Write out the mathematical function to solve the problem
+3. Create the box plot
+
+
+Workflow Plan
+1. Create the repo for Activity 15
+2. Create a second branch for all activity 15 work. Main is for the final product
+3. Created 2 issues 
+- 1 was for submitting the QMD and PDF files
+- Other was for the README
+4. Made my commits and pull requests
+5. Rendered my QMD and PDF file and embedded it into GitHub
+6. 
+
+
+
