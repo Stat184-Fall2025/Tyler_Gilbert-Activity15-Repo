@@ -76,7 +76,7 @@ baby_names_plot <- babynames %>%
 filter(name %in% c("Matthew", "Sarah", "Taylor", "Jordan")) %>%
 ggplot(aes(x = year, y = n, color = name)) +
 geom_line() +
-labs(title = "Popularity of Baby Names (Emma and Liam)",
+labs(title = "Popularity of Baby Names (Matthew, Sarah, Taylor, and Jordan)",
 x = "Year", y = "Number of Babies") +
 theme_minimal()
 
